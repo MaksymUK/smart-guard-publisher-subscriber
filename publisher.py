@@ -31,18 +31,37 @@ async def publish_message(message: str) -> None:
         await PUBLISHER.factory_object._credential.close()
 
 
+async def run_publisher_continuous() -> None:
+    while True:
+        event_occurred = check_for_event()
+        if event_occurred:
+            message = "Event detected! Sending message."
+            await publish_message(message)
+        await asyncio.sleep(5)  # Adjust sleep time as needed
+
+
+def check_for_event() -> bool:
+    # Replace with actual event detection logic
+    # Returning True as a placeholder to simulate an event.
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--msg",
                         type=str,
-                        required=True,
                         help="The message to publish.")
     parser.add_argument("--pubsub",
                         action="store_true",
                         help="If set, publish the message. Otherwise, only log.")
+    parser.add_argument("--continuous",
+                        action="store_true",
+                        help="Run publisher continuously.")
     args = parser.parse_args()
 
-    if args.msg:
+    if args.continuous:
+        asyncio.run(run_publisher_continuous())
+    elif args.msg:
         if args.pubsub:
             asyncio.run(publish_message(args.msg))
         else:

@@ -7,11 +7,11 @@ fi
 case $1 in
     run_publisher)
         echo "Starting the publisher..."
-        python -u publisher.py --msg "Testing publisher 123" --pubsub
+        python -u publisher.py --continuous
         ;;
     run_subscriber)
         echo "Starting the subscriber..."
-        python -u subscriber.py
+        python -u subscriber.py --continuous
         ;;
     *)
         exec "$@"
