@@ -21,16 +21,15 @@ class MessageReceiverStrategy(ABC):
                                source: str) -> None:
         # Built-in Constants
         MAX_MESSAGE_COUNT = 20  # Maximum message fetch in a single request
-        MAX_WAIT_TIME = 10  # For bigger message size, it need to be increase
+        MAX_WAIT_TIME = 10  # For bigger message size, it needs to be increase
 
         # Custom Constants
-        EMPTY_MESSAGES_THRESHOLD = 10
+        # EMPTY_MESSAGES_THRESHOLD = 10
         PULLING_FREQUENCY_SECONDS = 5
 
         empty_messages_count = 0
         while True:
-            received_msgs = await receiver.receive_messages(max_message_count=MAX_MESSAGE_COUNT,
-                                                            max_wait_time=MAX_WAIT_TIME)
+            received_msgs = await receiver.receive_messages(max_wait_time=MAX_WAIT_TIME)
             if received_msgs:
                 for msg in received_msgs:
                     await message_handler(msg)
@@ -42,9 +41,9 @@ class MessageReceiverStrategy(ABC):
             empty_messages_count += 1
             logging.info(f'No messages received from {source}, empty count: {empty_messages_count}')
 
-            if empty_messages_count >= EMPTY_MESSAGES_THRESHOLD:
-                logging.info(f'Empty messages count threshold reached, exiting...')
-                break
+            # if empty_messages_count >= EMPTY_MESSAGES_THRESHOLD:
+            #     logging.info(f'Empty messages count threshold reached, exiting...')
+            #     break
 
             logging.info(f'No messages received from {source}, sleeping... for {PULLING_FREQUENCY_SECONDS} seconds')
             await asyncio.sleep(PULLING_FREQUENCY_SECONDS)
